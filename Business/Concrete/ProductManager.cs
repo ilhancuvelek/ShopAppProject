@@ -34,14 +34,19 @@ namespace Business.Concrete
             return _productRepository.GetById(id);
         }
 
+        public int GetCountByCategory(string category)
+        {
+            return _productRepository.GetCountByCategory(category);
+        }
+
         public Product GetProductDetails(string productNameUrl)
         {
             return _productRepository.GetProductDetails(productNameUrl);
         }
 
-        public List<Product> GetProductsByCategory(string name)
+        public List<Product> GetProductsByCategory(string name, int page, int pageSize)
         {
-            return _productRepository.GetProductsByCategory(name);
+            return _productRepository.GetProductsByCategory(name, page, pageSize);
         }
 
         public void Update(Product product)

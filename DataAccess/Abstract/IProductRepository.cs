@@ -11,6 +11,9 @@ namespace DataAccess.Abstract
         Product GetProductDetails(string productNameUrl);
 
         //Kategori adına göre ürün filtreleme
-        List<Product> GetProductsByCategory(string name);
+        List<Product> GetProductsByCategory(string name, int page, int pageSize);
+
+        //sayfalama
+        int GetCountByCategory(string category);
     }
 }
