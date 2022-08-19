@@ -19,9 +19,7 @@ namespace ShopApp.Controllers
         }
         public IActionResult Index()
         {
-           
-            
-            var productViewModel = new ProductListViewModel { Products = _productService.GetAll() };
+            var productViewModel = new ProductListViewModel { Products = _productService.GetHomePageProducts() };
             return View(productViewModel);
         }
         public IActionResult About()

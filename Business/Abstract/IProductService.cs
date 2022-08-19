@@ -19,5 +19,8 @@ namespace Business.Abstract
         //Kategori adına göre ürün filtreleme
         List<Product> GetProductsByCategory(string name,int page,int pageSize);
         int GetCountByCategory(string category);
+
+        //anasayfa ürünleri
+        List<Product> GetHomePageProducts();
     }
 }

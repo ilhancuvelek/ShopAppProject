@@ -13,6 +13,7 @@ namespace Entity
         public string ImageUrl { get; set; }
         public string Description { get; set; }
         public bool IsApproved { get; set; }
+        public bool IsHome { get; set; }
 
         public List<ProductCategory> ProductsCategories { get; set; }
     }

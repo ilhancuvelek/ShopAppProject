@@ -16,7 +16,7 @@ namespace DataAccess.Concrete.EfCore
         {
             using (var context = new ShopContext())
             {
-                var products = context.Products.AsQueryable();
+                var products = context.Products.Where(i=>i.IsApproved).AsQueryable();
                 if (!string.IsNullOrEmpty(category))
                 {
                     products = products
@@ -26,6 +26,14 @@ namespace DataAccess.Concrete.EfCore
                 }
                 return products.Count();
 
+            }
+        }
+        //anasayfa ürünleri
+        public List<Product> GetHomePageProducts()
+        {
+            using (var context=new ShopContext())
+            {
+                return context.Products.Where(i => i.IsApproved && i.IsHome).ToList();
             }
         }
 
@@ -45,7 +53,7 @@ namespace DataAccess.Concrete.EfCore
         {
             using (var context = new ShopContext())
             {
-                var products = context.Products.AsQueryable();
+                var products = context.Products.Where(i => i.IsApproved).AsQueryable();
                 if (!string.IsNullOrEmpty(name))
                 {
                     products= products

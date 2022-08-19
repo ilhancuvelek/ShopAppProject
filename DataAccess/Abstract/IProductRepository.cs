@@ -15,5 +15,8 @@ namespace DataAccess.Abstract
 
         //sayfalama
         int GetCountByCategory(string category);
+
+        //anasayfa ürünleri
+        List<Product> GetHomePageProducts();
     }
 }

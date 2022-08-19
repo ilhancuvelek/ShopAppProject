@@ -39,6 +39,11 @@ namespace Business.Concrete
             return _productRepository.GetCountByCategory(category);
         }
 
+        public List<Product> GetHomePageProducts()
+        {
+            return _productRepository.GetHomePageProducts();
+        }
+
         public Product GetProductDetails(string productNameUrl)
         {
             return _productRepository.GetProductDetails(productNameUrl);
