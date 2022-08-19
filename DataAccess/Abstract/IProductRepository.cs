@@ -18,5 +18,8 @@ namespace DataAccess.Abstract
 
         //anasayfa ürünleri
         List<Product> GetHomePageProducts();
+
+        //Aranan ürünler
+        List<Product> GetSearchResult(string searchString);
     }
 }

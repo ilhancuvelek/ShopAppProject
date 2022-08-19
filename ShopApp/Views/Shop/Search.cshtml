@@ -1,12 +1,13 @@
+﻿@{
+    ViewData["Title"] = "List";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
 @model ProductListViewModel
 
 
-
-@await Html.PartialAsync("_header")
-
 <div class="row">
     <div class="col-md-3">
-        @await Html.PartialAsync("_search")
+        @await Html.PartialAsync("_search") 
         @await Component.InvokeAsync("Categories")
     </div>
     <div class="col-md-9">
@@ -18,6 +19,7 @@
                 </div>
             }
         </div>
+        
     </div>
 </div>
 
