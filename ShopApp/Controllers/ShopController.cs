@@ -3,7 +3,6 @@ using Entity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using ShopApp.Models;
-using ShopApp.ViewModels;
 using System.Linq;
 
 namespace ShopApp.Controllers

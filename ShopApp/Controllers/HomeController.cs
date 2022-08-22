@@ -1,7 +1,7 @@
 ﻿using DataAccess.Abstract;
 using Microsoft.AspNetCore.Mvc;
 using Entity;
-using ShopApp.ViewModels;
+using ShopApp.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

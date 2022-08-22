@@ -62,6 +62,12 @@ namespace ShopApp
 
             app.UseEndpoints(endpoints =>
             {
+                //admin ürün listeleme
+                endpoints.MapControllerRoute(
+                    name: "adminproductlist",
+                    pattern: "admin/products",
+                    defaults: new { controller = "Admin", action = "ProductList" }
+                );
                 endpoints.MapControllerRoute(
                     name: "search",
                     pattern: "search",
