@@ -68,6 +68,12 @@ namespace ShopApp
                     pattern: "admin/products",
                     defaults: new { controller = "Admin", action = "ProductList" }
                 );
+                //admin ürün güncelleme
+                endpoints.MapControllerRoute(
+                    name: "adminproductedit",
+                    pattern: "admin/products/{id?}",
+                    defaults: new { controller = "Admin", action = "Edit" }
+                );
                 endpoints.MapControllerRoute(
                     name: "search",
                     pattern: "search",
