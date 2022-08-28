@@ -9,11 +9,14 @@ namespace ShopApp.Controllers
 {
     public class AdminController : Controller
     {
-       private IProductService _productService;
-        public AdminController(IProductService IProductService)
+        private IProductService _productService;
+        private ICategoryService _categoryService;
+        public AdminController(IProductService productService, ICategoryService categoryService)
         {
-            _productService = IProductService;
+            _productService = productService;
+            _categoryService = categoryService;
         }
+        //  --- Product ---
         public IActionResult ProductList()
         {
             var productListViewModel = new ProductListViewModel()
@@ -23,12 +26,12 @@ namespace ShopApp.Controllers
             return View(productListViewModel);
         }
         [HttpGet]
-        public IActionResult CreateProduct()
+        public IActionResult ProductCreate()
         {
             return View();
         }
         [HttpPost]
-        public IActionResult CreateProduct(ProductModel productModel)
+        public IActionResult ProductCreate(ProductModel productModel)
         {
             var entity = new Product()
             {
@@ -51,7 +54,7 @@ namespace ShopApp.Controllers
             return RedirectToAction("ProductList");
         }
         [HttpGet]
-        public IActionResult Edit(int? id)
+        public IActionResult ProductEdit(int? id)
         {
             if (id == null)
             {
@@ -78,7 +81,7 @@ namespace ShopApp.Controllers
 
         }
         [HttpPost]
-        public IActionResult Edit(ProductModel productModel)
+        public IActionResult ProductEdit(ProductModel productModel)
         {
             var entity = _productService.GetById(productModel.ProductId);
             if (entity == null)
@@ -122,6 +125,110 @@ namespace ShopApp.Controllers
             //bilgilendirme mesajı -son-
             return RedirectToAction("ProductList");
         }
+
+        //  --- Product SON ---
+
+        // --- Category ---
+        public IActionResult CategoryList()
+        {
+            var categoryListViewModel = new CategoryListViewModel()
+            {
+                Categories = _categoryService.GetAll()
+            };
+            return View(categoryListViewModel);
+        }
+        public IActionResult CategoryCreate()
+        {
+            return View();
+        }
+        [HttpPost]
+        public IActionResult CategoryCreate(CategoryModel categoryModel)
+        {
+            var entity = new Category()
+            {
+                Name = categoryModel.Name,
+                Url=categoryModel.Url
+            };
+            _categoryService.Create(entity);
+
+            //bilgilendirme mesajı
+            var msg = new AlertMessage
+            {
+                Message = $"{entity.Name} isimli category eklendi.",
+                AlertType = "success"
+            };
+            TempData["message"] = JsonConvert.SerializeObject(msg);
+            //bilgilendirme mesajı -son-
+            return RedirectToAction("CategoryList");
+        }
+        [HttpGet]
+        public IActionResult CategoryEdit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var entity = _categoryService.GetById((int)id);
+
+            if (entity == null)
+            {
+                return NotFound();
+            }
+
+            var model = new CategoryModel()
+            {
+                CategoryId = entity.CategoryId,
+                Name = entity.Name,
+                Url = entity.Url,
+            };
+            return View(model);
+
+        }
+        [HttpPost]
+        public IActionResult CategoryEdit(CategoryModel categoryModel)
+        {
+            var entity = _categoryService.GetById(categoryModel.CategoryId);
+            if (entity == null)
+            {
+                return NotFound();
+            }
+            entity.Name = categoryModel.Name;
+            entity.Url = categoryModel.Url;
+
+            _categoryService.Update(entity);
+
+            //bilgilendirme mesajı
+            var msg = new AlertMessage
+            {
+                Message = $"{entity.Name} isimli kategory güncellendi.",
+                AlertType = "success"
+            };
+            TempData["message"] = JsonConvert.SerializeObject(msg);
+            //bilgilendirme mesajı -son-
+            return RedirectToAction("CategoryList");
+
+        }
+        public IActionResult DeleteCategory(int categoryId)
+        {
+            var category = _categoryService.GetById(categoryId);
+            if (category != null)
+            {
+                _categoryService.Delete(category);
+            }
+
+            //bilgilendirme mesajı
+            var msg = new AlertMessage
+            {
+                Message = $"{category.Name} isimli kategory silindi.",
+                AlertType = "danger"
+            };
+            TempData["message"] = JsonConvert.SerializeObject(msg);
+            //bilgilendirme mesajı -son-
+            return RedirectToAction("CategoryList");
+        }
+
+        // --- Category SON ---
     }
 }
 
