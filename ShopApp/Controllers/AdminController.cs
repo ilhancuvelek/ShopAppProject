@@ -2,6 +2,7 @@
 using DataAccess.Abstract;
 using Entity;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using ShopApp.Models;
 
 namespace ShopApp.Controllers
@@ -38,6 +39,15 @@ namespace ShopApp.Controllers
                 Url=productModel.Url    
             };
             _productService.Create(entity);
+
+            //bilgilendirme mesajı
+             var msg= new AlertMessage
+            {
+                Message=$"{entity.Name} isimli ürün eklendi.",
+                AlertType="success"
+            };
+            TempData["message"] = JsonConvert.SerializeObject(msg);
+            //bilgilendirme mesajı -son-
             return RedirectToAction("ProductList");
         }
         [HttpGet]
@@ -83,8 +93,34 @@ namespace ShopApp.Controllers
 
             _productService.Update(entity);
 
+            //bilgilendirme mesajı
+            var msg = new AlertMessage
+            {
+                Message = $"{entity.Name} isimli ürün güncellendi.",
+                AlertType = "success"
+            };
+            TempData["message"] = JsonConvert.SerializeObject(msg);
+            //bilgilendirme mesajı -son-
             return RedirectToAction("ProductList");
 
+        }
+        public IActionResult DeleteProduct(int productId)
+        {
+            var product = _productService.GetById(productId);
+            if (product!=null)
+            {
+                _productService.Delete(product);
+            }
+
+            //bilgilendirme mesajı
+            var msg = new AlertMessage
+            {
+                Message = $"{product.Name} isimli ürün silindi.",
+                AlertType = "danger"
+            };
+            TempData["message"] = JsonConvert.SerializeObject(msg);
+            //bilgilendirme mesajı -son-
+            return RedirectToAction("ProductList");
         }
     }
 }

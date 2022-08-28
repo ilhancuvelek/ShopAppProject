@@ -15,6 +15,20 @@
 
     <main class="my-3">
         <div class="container">
+            @* bilgilendirme mesajý*@
+            @if (TempData["message"]!=null)
+            {
+                var message = JsonConvert.DeserializeObject<AlertMessage>(TempData["message"] as string);
+
+                <div class="row"cla>
+                    <div class="col-md-12">
+                        <div class="alert alert-@message.AlertType">
+                            @message.Message
+                        </div>
+                    </div>
+                </div>
+            }
+            @* bilgilendirme mesajý -son-*@
             @RenderBody()
         </div>
     </main>
