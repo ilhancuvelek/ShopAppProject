@@ -4,6 +4,7 @@ using Entity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using ShopApp.Models;
+using System.Linq;
 
 namespace ShopApp.Controllers
 {
@@ -169,7 +170,7 @@ namespace ShopApp.Controllers
                 return NotFound();
             }
 
-            var entity = _categoryService.GetById((int)id);
+            var entity = _categoryService.GetByIdWithProducts((int)id);
 
             if (entity == null)
             {
@@ -181,6 +182,7 @@ namespace ShopApp.Controllers
                 CategoryId = entity.CategoryId,
                 Name = entity.Name,
                 Url = entity.Url,
+                Products = entity.ProductsCategories.Select(p => p.Product).ToList()
             };
             return View(model);
 
@@ -226,6 +228,12 @@ namespace ShopApp.Controllers
             TempData["message"] = JsonConvert.SerializeObject(msg);
             //bilgilendirme mesajı -son-
             return RedirectToAction("CategoryList");
+        }
+        [HttpPost]
+        public IActionResult DeleteFromCategory(int productId,int categoryId)
+        {
+            _categoryService.DeleteFromCategory(productId, categoryId);
+            return Redirect("/admin/categories/" + categoryId);
         }
 
         // --- Category SON ---

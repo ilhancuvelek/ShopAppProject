@@ -12,5 +12,10 @@ namespace Business.Abstract
         void Delete(Category category);
         Category GetById(int id);
         List<Category> GetAll();
+
+        //category edit product-category birleştirme
+        Category GetByIdWithProducts(int id);
+
+        void DeleteFromCategory(int productId, int categoryId);
     }
 }

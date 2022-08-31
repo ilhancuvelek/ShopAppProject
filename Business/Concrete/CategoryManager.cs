@@ -24,6 +24,11 @@ namespace Business.Concrete
             _categoryRepository.Delete(category);
         }
 
+        public void DeleteFromCategory(int productId, int categoryId)
+        {
+            _categoryRepository.DeleteFromCategory(productId, categoryId);  
+        }
+
         public List<Category> GetAll()
         {
             return _categoryRepository.GetAll();
@@ -32,6 +37,11 @@ namespace Business.Concrete
         public Category GetById(int id)
         {
             return _categoryRepository.GetById(id);
+        }
+
+        public Category GetByIdWithProducts(int id)
+        {
+            return _categoryRepository.GetByIdWithProducts(id);
         }
 
         public void Update(Category category)
