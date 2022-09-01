@@ -11,6 +11,15 @@ namespace DataAccess.Concrete.EfCore
 {
     public class EfCoreProductRepository : EfCoreGenericRepository<Product, ShopContext>, IProductRepository
     {
+        //product edit sayfası kategori checkbox
+        public Product GetByIdWithCategories(int id)
+        {
+            using (var context=new ShopContext())
+            {
+                return context.Products.Where(p => p.ProductId == id).Include(pc => pc.ProductsCategories).ThenInclude(c => c.Category).FirstOrDefault();
+            }
+        }
+
         //(sayfalama) kategori seçildikten sonra sayfalama yapılmak istenirse diye kategoriye göre yaptık kategori yoksa normal
         public int GetCountByCategory(string category)
         {
@@ -74,6 +83,32 @@ namespace DataAccess.Concrete.EfCore
                 return products.ToList();
             }
            
+        }
+
+        public void Update(Product product, int[] categoryIds)
+        {
+            using (var context=new ShopContext())
+            {
+                var entity = context.Products.Include(i => i.ProductsCategories).
+                    FirstOrDefault(p => p.ProductId == product.ProductId);
+                if (entity!=null)
+                {
+                    entity.Name = product.Name;
+                    entity.Description = product.Description;
+                    entity.Price=product.Price;
+                    entity.Url=product.Url;
+                    entity.ImageUrl = product.ImageUrl;
+
+                    entity.ProductsCategories = categoryIds.Select(catid => new ProductCategory()
+                    {
+                        ProductId=product.ProductId,
+                        CategoryId=catid
+                        
+                    }).ToList();
+
+                    context.SaveChanges();
+                }
+            }
         }
     }
 }

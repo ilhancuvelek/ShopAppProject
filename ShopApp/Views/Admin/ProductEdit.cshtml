@@ -7,10 +7,10 @@
 
 <h1 class="h3">Edit Product</h1>
 <hr>
-
+<form asp-controller="Admin" asp-action="ProductEdit" method="POST">
 <div class="row">
-    <div class="col-md-8">
-        <form asp-controller="Admin" asp-action="ProductEdit" method="POST">
+    <div class="col-md-4">
+        
             <input type="hidden" name="ProductId" value="@Model.ProductId"/>
             <div class="form-group row">
                 <label asp-for="Name" class="col-sm-2 col-form-label"></label>
@@ -47,7 +47,16 @@
                     <button type="submit" class="btn btn-primary">Edit Product</button>
                 </div>
             </div>
-        </form>
+        
+    </div>
+    <div class="col-md-8">
+        @foreach (var item in (List<Category>)ViewBag.Categories)
+        {
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="category_@(item.CategoryId)" name="categoryIds" value="@item.CategoryId" @(Model.SelectedCategories.Any(i=>i.CategoryId==item.CategoryId)?"checked":"")>
+                <label for="category_@(item.CategoryId)" class="form-check-label">@item.Name</label>
+            </div>
+        }
     </div>
 </div>
-
+</form>

@@ -62,7 +62,7 @@ namespace ShopApp.Controllers
                 return NotFound();
             }
 
-            var entity = _productService.GetById((int)id);
+            var entity = _productService.GetByIdWithCategories((int)id);
 
             if (entity == null)
             {
@@ -76,13 +76,15 @@ namespace ShopApp.Controllers
                 Url = entity.Url,
                 Price = entity.Price,
                 ImageUrl = entity.ImageUrl,
-                Description = entity.Description
+                Description = entity.Description,
+                SelectedCategories = entity.ProductsCategories.Select(p => p.Category).ToList()//bu seçilen ürünün kategorileri
             };
+            ViewBag.Categories = _categoryService.GetAll();//bu tüm kategoriler
             return View(model);
 
         }
         [HttpPost]
-        public IActionResult ProductEdit(ProductModel productModel)
+        public IActionResult ProductEdit(ProductModel productModel, int[] categoryIds)
         {
             var entity = _productService.GetById(productModel.ProductId);
             if (entity == null)
@@ -95,7 +97,7 @@ namespace ShopApp.Controllers
             entity.ImageUrl = productModel.ImageUrl;
             entity.Description = productModel.Description;
 
-            _productService.Update(entity);
+            _productService.Update(entity,categoryIds);
 
             //bilgilendirme mesajı
             var msg = new AlertMessage

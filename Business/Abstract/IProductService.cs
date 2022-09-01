@@ -24,5 +24,11 @@ namespace Business.Abstract
         List<Product> GetHomePageProducts();
         //Aranan ürünler
         List<Product> GetSearchResult(string searchString);
+
+        //product edit sayfası kategori checkbox
+        Product GetByIdWithCategories(int id);
+
+        //aşırı yükleme
+        void Update(Product product, int[] categoryIds);
     }
 }

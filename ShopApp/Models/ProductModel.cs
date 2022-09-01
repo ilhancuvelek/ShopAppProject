@@ -1,4 +1,7 @@
-﻿namespace ShopApp.Models
+﻿using Entity;
+using System.Collections.Generic;
+
+namespace ShopApp.Models
 {
 
     //entity deki lerin hepsini kullanmak istemediğimizde veya
@@ -11,5 +14,7 @@
         public string Url { get; set; }
         public string ImageUrl { get; set; }
         public string Description { get; set; }
+
+        public List<Category> SelectedCategories { get; set; }
     }
 }
