@@ -5,9 +5,9 @@ using System.Text;
 
 namespace Business.Abstract
 {
-    public interface IProductService
+    public interface IProductService:IValidator<Product>
     {
-        void Create(Product product);
+        bool Create(Product product);
         void Update(Product product);
         void Delete(Product product);
         Product GetById(int id);

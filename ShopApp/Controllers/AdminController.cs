@@ -34,25 +34,29 @@ namespace ShopApp.Controllers
         [HttpPost]
         public IActionResult ProductCreate(ProductModel productModel)
         {
-            var entity = new Product()
+            if (ModelState.IsValid)
             {
-                Price = productModel.Price,
-                Name=productModel.Name,
-                Description=productModel.Description,
-                ImageUrl=productModel.ImageUrl,
-                Url=productModel.Url    
-            };
-            _productService.Create(entity);
+                var entity = new Product()
+                {
+                    Name = productModel.Name,
+                    Url = productModel.Url,
+                    Price = productModel.Price,
+                    Description = productModel.Description,
+                    ImageUrl = productModel.ImageUrl
+                };
 
-            //bilgilendirme mesajı
-             var msg= new AlertMessage
-            {
-                Message=$"{entity.Name} isimli ürün eklendi.",
-                AlertType="success"
-            };
-            TempData["message"] = JsonConvert.SerializeObject(msg);
-            //bilgilendirme mesajı -son-
-            return RedirectToAction("ProductList");
+                if (_productService.Create(entity)) // iş kuralı için create yi bool a çevirdik
+                {
+                    //bilgilendirme mesajı
+                    CreateMessage("kayıt eklendi", "success");
+                    //bilgilendirme mesajı -son-
+                    return RedirectToAction("ProductList");
+                }
+                CreateMessage(_productService.ErrorMessage, "danger");
+                return View(productModel);
+
+            }
+            return View(productModel);
         }
         [HttpGet]
         public IActionResult ProductEdit(int? id)
@@ -86,28 +90,30 @@ namespace ShopApp.Controllers
         [HttpPost]
         public IActionResult ProductEdit(ProductModel productModel, int[] categoryIds)
         {
-            var entity = _productService.GetById(productModel.ProductId);
-            if (entity == null)
+            if (ModelState.IsValid)
             {
-                return NotFound();
+                var entity = _productService.GetById(productModel.ProductId);
+                if (entity == null)
+                {
+                    return NotFound();
+                }
+                entity.Name = productModel.Name;
+                entity.Price = productModel.Price;
+                entity.Url = productModel.Url;
+                entity.ImageUrl = productModel.ImageUrl;
+                entity.Description = productModel.Description;
+
+                _productService.Update(entity, categoryIds);
+
+                //bilgilendirme mesajı
+                CreateMessage("kayıt güncellendi", "success");
+                //bilgilendirme mesajı -son-
+
+                return RedirectToAction("ProductList");
             }
-            entity.Name = productModel.Name;
-            entity.Price = productModel.Price;
-            entity.Url = productModel.Url;
-            entity.ImageUrl = productModel.ImageUrl;
-            entity.Description = productModel.Description;
+            ViewBag.Categories = _categoryService.GetAll();
+            return View(productModel);
 
-            _productService.Update(entity,categoryIds);
-
-            //bilgilendirme mesajı
-            var msg = new AlertMessage
-            {
-                Message = $"{entity.Name} isimli ürün güncellendi.",
-                AlertType = "success"
-            };
-            TempData["message"] = JsonConvert.SerializeObject(msg);
-            //bilgilendirme mesajı -son-
-            return RedirectToAction("ProductList");
 
         }
         public IActionResult DeleteProduct(int productId)
@@ -119,12 +125,7 @@ namespace ShopApp.Controllers
             }
 
             //bilgilendirme mesajı
-            var msg = new AlertMessage
-            {
-                Message = $"{product.Name} isimli ürün silindi.",
-                AlertType = "danger"
-            };
-            TempData["message"] = JsonConvert.SerializeObject(msg);
+            CreateMessage("kayıt silindi", "danger");
             //bilgilendirme mesajı -son-
             return RedirectToAction("ProductList");
         }
@@ -147,22 +148,24 @@ namespace ShopApp.Controllers
         [HttpPost]
         public IActionResult CategoryCreate(CategoryModel categoryModel)
         {
-            var entity = new Category()
+            if (ModelState.IsValid)
             {
-                Name = categoryModel.Name,
-                Url=categoryModel.Url
-            };
-            _categoryService.Create(entity);
+                var entity = new Category()
+                {
+                    Name = categoryModel.Name,
+                    Url = categoryModel.Url
+                };
 
-            //bilgilendirme mesajı
-            var msg = new AlertMessage
-            {
-                Message = $"{entity.Name} isimli category eklendi.",
-                AlertType = "success"
-            };
-            TempData["message"] = JsonConvert.SerializeObject(msg);
-            //bilgilendirme mesajı -son-
-            return RedirectToAction("CategoryList");
+                _categoryService.Create(entity);
+
+                //bilgilendirme mesajı
+                CreateMessage("kayıt eklendi", "success");
+                //bilgilendirme mesajı -son-
+
+
+                return RedirectToAction("CategoryList");
+            }
+            return View(categoryModel);
         }
         [HttpGet]
         public IActionResult CategoryEdit(int? id)
@@ -192,26 +195,25 @@ namespace ShopApp.Controllers
         [HttpPost]
         public IActionResult CategoryEdit(CategoryModel categoryModel)
         {
-            var entity = _categoryService.GetById(categoryModel.CategoryId);
-            if (entity == null)
+            if (ModelState.IsValid)
             {
-                return NotFound();
+                var entity = _categoryService.GetById(categoryModel.CategoryId);
+                if (entity == null)
+                {
+                    return NotFound();
+                }
+                entity.Name = categoryModel.Name;
+                entity.Url = categoryModel.Url;
+
+                _categoryService.Update(entity);
+
+                //bilgilendirme mesajı
+                CreateMessage("kayıt güncellendi", "success");
+                //bilgilendirme mesajı -son-
+
+                return RedirectToAction("CategoryList");
             }
-            entity.Name = categoryModel.Name;
-            entity.Url = categoryModel.Url;
-
-            _categoryService.Update(entity);
-
-            //bilgilendirme mesajı
-            var msg = new AlertMessage
-            {
-                Message = $"{entity.Name} isimli kategory güncellendi.",
-                AlertType = "success"
-            };
-            TempData["message"] = JsonConvert.SerializeObject(msg);
-            //bilgilendirme mesajı -son-
-            return RedirectToAction("CategoryList");
-
+            return View(categoryModel);
         }
         public IActionResult DeleteCategory(int categoryId)
         {
@@ -222,12 +224,7 @@ namespace ShopApp.Controllers
             }
 
             //bilgilendirme mesajı
-            var msg = new AlertMessage
-            {
-                Message = $"{category.Name} isimli kategory silindi.",
-                AlertType = "danger"
-            };
-            TempData["message"] = JsonConvert.SerializeObject(msg);
+            CreateMessage("kayıt silindi", "danger");
             //bilgilendirme mesajı -son-
             return RedirectToAction("CategoryList");
         }
@@ -239,6 +236,18 @@ namespace ShopApp.Controllers
         }
 
         // --- Category SON ---
+
+        //bilgilendirme mesajı
+        private void CreateMessage(string message,string alerttype)
+        {
+            var msg = new AlertMessage
+            {
+                Message = message,
+                AlertType = alerttype
+            };
+            TempData["message"] = JsonConvert.SerializeObject(msg);
+        }
+        //bilgilendirme mesajı -son-
     }
 }
 

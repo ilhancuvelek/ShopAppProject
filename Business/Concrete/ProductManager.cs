@@ -14,9 +14,14 @@ namespace Business.Concrete
         {
             _productRepository=productRepository;
         }
-        public void Create(Product product)
+        public bool Create(Product product)
         {
-            _productRepository.Create(product);
+            if (Validation(product))
+            {
+                _productRepository.Create(product);
+                return true;
+            }
+            return false;
         }
 
         public void Delete(Product product)
@@ -72,6 +77,24 @@ namespace Business.Concrete
         public void Update(Product product, int[] categoryIds)
         {
             _productRepository.Update(product, categoryIds);
+        }
+
+        // İŞ KURALI
+        public string ErrorMessage { get; set; }
+        public bool Validation(Product entity)
+        {
+            var isValid = true;
+            if (string.IsNullOrEmpty(entity.Name)) 
+            {
+                ErrorMessage += "ürün ismi girmelisiniz \n";
+                isValid = false;
+            }
+            if (entity.Price<0)
+            {
+                ErrorMessage += "ürün fiyatı negatif olamaz \n";
+                isValid = false;
+            }
+            return isValid;
         }
     }
 }

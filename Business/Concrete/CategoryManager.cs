@@ -48,5 +48,12 @@ namespace Business.Concrete
         {
             _categoryRepository.Update(category);
         }
+
+        // İŞ KURALI
+        public string ErrorMessage { get; set; }
+        public bool Validation(Category entity)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

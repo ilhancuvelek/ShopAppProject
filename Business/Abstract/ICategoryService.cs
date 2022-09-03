@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Business.Abstract
 {
-    public interface ICategoryService
+    public interface ICategoryService:IValidator<Category>
     {
         void Create(Category category);
         void Update(Category category);
