@@ -1,10 +1,14 @@
 ﻿using Business.Abstract;
 using DataAccess.Abstract;
 using Entity;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using ShopApp.Models;
+using System;
+using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace ShopApp.Controllers
 {
@@ -81,6 +85,8 @@ namespace ShopApp.Controllers
                 Price = entity.Price,
                 ImageUrl = entity.ImageUrl,
                 Description = entity.Description,
+                IsApproved=entity.IsApproved,
+                IsHome=entity.IsHome,
                 SelectedCategories = entity.ProductsCategories.Select(p => p.Category).ToList()//bu seçilen ürünün kategorileri
             };
             ViewBag.Categories = _categoryService.GetAll();//bu tüm kategoriler
@@ -88,7 +94,7 @@ namespace ShopApp.Controllers
 
         }
         [HttpPost]
-        public IActionResult ProductEdit(ProductModel productModel, int[] categoryIds)
+        public async Task<IActionResult> ProductEdit(ProductModel productModel, int[] categoryIds,IFormFile file)
         {
             if (ModelState.IsValid)
             {
@@ -100,16 +106,33 @@ namespace ShopApp.Controllers
                 entity.Name = productModel.Name;
                 entity.Price = productModel.Price;
                 entity.Url = productModel.Url;
-                entity.ImageUrl = productModel.ImageUrl;
                 entity.Description = productModel.Description;
+                entity.IsHome = productModel.IsHome;
+                entity.IsApproved = productModel.IsApproved;
 
-                _productService.Update(entity, categoryIds);
+                //resim ekleme
+                if (file!=null)
+                {
+                    var extention = Path.GetExtension(file.FileName);
+                    var randomName = string.Format($"{Guid.NewGuid()}{extention}");
+                    entity.ImageUrl = randomName;
+                    var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\img", randomName);
 
-                //bilgilendirme mesajı
-                CreateMessage("kayıt güncellendi", "success");
-                //bilgilendirme mesajı -son-
+                    using (var stream=new FileStream(path,FileMode.Create))
+                    {
+                        await file.CopyToAsync(stream);
+                    }
+                }
+                //resim ekleme --SON--
 
-                return RedirectToAction("ProductList");
+                if (_productService.Update(entity, categoryIds)) // iş kuralı için update i bool a çevirdik
+                {
+                    //bilgilendirme mesajı
+                    CreateMessage("kayıt güncellendi", "success");
+                    //bilgilendirme mesajı -son-
+                    return RedirectToAction("ProductList");
+                }
+                CreateMessage(_productService.ErrorMessage, "danger");
             }
             ViewBag.Categories = _categoryService.GetAll();
             return View(productModel);

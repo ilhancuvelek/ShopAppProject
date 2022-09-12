@@ -29,6 +29,6 @@ namespace Business.Abstract
         Product GetByIdWithCategories(int id);
 
         //aşırı yükleme
-        void Update(Product product, int[] categoryIds);
+        bool Update(Product product, int[] categoryIds);
     }
 }

@@ -74,9 +74,19 @@ namespace Business.Concrete
             _productRepository.Update(product);
         }
 
-        public void Update(Product product, int[] categoryIds)
+        public bool Update(Product product, int[] categoryIds)
         {
-            _productRepository.Update(product, categoryIds);
+            if (Validation(product))
+            {
+                if (categoryIds.Length==0)
+                {
+                    ErrorMessage += "Ürün için en az bir kategori seçmelisiniz.";
+                    return false;
+                }
+                _productRepository.Update(product, categoryIds);
+                return true;
+            }
+            return false;
         }
 
         // İŞ KURALI

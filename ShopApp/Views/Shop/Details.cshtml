@@ -29,8 +29,8 @@
         </div>       
     </div>
     <div class="row">
-        <div class="col-md-12">
-            <p class="p-3">@Model.Product.Description</p>
+        <div class="col-md-12 p-5">
+            <p class="p-3">@Html.Raw(@Model.Product.Description)</p>@*Html.raw ckeditor için*@
         </div>
     </div>
 </div>

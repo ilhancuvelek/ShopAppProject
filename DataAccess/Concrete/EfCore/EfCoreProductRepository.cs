@@ -98,6 +98,8 @@ namespace DataAccess.Concrete.EfCore
                     entity.Price=product.Price;
                     entity.Url=product.Url;
                     entity.ImageUrl = product.ImageUrl;
+                    entity.IsApproved = product.IsApproved;
+                    entity.IsHome = product.IsHome;
 
                     entity.ProductsCategories = categoryIds.Select(catid => new ProductCategory()
                     {
