@@ -69,5 +69,10 @@ namespace ShopApp.Controllers
             ModelState.AddModelError("", "Bilinmeyen bir hata oluştu.Lütfen tekrar deneyiniz.");
             return View(registerModel);
         }
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return Redirect("~/");
+        }
     }
 }
