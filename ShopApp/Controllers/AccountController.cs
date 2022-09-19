@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace ShopApp.Controllers
 {
+    [ValidateAntiForgeryToken] //csrf token bu sadece post lara uygular.
     public class AccountController : Controller
     {
         private UserManager<User> _userManager;

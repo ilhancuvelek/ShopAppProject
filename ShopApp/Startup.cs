@@ -68,7 +68,8 @@ namespace ShopApp
                 options.Cookie = new CookieBuilder
                 {
                     HttpOnly = true,
-                    Name = ".ShopApp.Security.Cookie"
+                    Name = ".ShopApp.Security.Cookie",
+                    SameSite=SameSiteMode.Strict //csrf token
                 };
             });
             //Identity ayarlarý için --SON--
