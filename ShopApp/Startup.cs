@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using ShopApp.EmailServices;
 using ShopApp.Identity;
 using System;
 using System.Collections.Generic;
@@ -24,9 +25,10 @@ namespace ShopApp
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        private IConfiguration _configuration;
+        public Startup(IConfiguration configuration) //app settingdeki email bilgileri için
         {
-            Configuration = configuration;
+            _configuration = configuration;
         }
 
         public IConfiguration Configuration { get; }
@@ -55,7 +57,7 @@ namespace ShopApp
 
                 // options.User.AllowedUserNameCharacters = "";
                 options.User.RequireUniqueEmail = true;
-                options.SignIn.RequireConfirmedEmail = false;
+                options.SignIn.RequireConfirmedEmail = true;
                 options.SignIn.RequireConfirmedPhoneNumber = false;
             });
 
@@ -79,6 +81,17 @@ namespace ShopApp
 
             services.AddScoped<IProductService, ProductManager>();
             services.AddScoped<ICategoryService, CategoryManager>();
+
+            //email onay için
+            services.AddScoped<IEmailSender, SmtpEmailSender>(i =>
+                new SmtpEmailSender(
+                    _configuration["EmailSender:Host"],
+                    _configuration.GetValue<int>("EmailSender:Port"),
+                    _configuration.GetValue<bool>("EmailSender:EnableSSL"),
+                    _configuration["EmailSender:UserName"],
+                    _configuration["EmailSender:Password"])
+                );
+            //services.AddControllersWithViews();
             services.AddRazorPages();
         }
 
