@@ -95,21 +95,15 @@ namespace ShopApp.Controllers
             return View(registerModel);
 
         }
-        public async Task<IActionResult> Logout()
+        public async Task<IActionResult> ConfirmEmail(string userId, string token)//register dan alacak
         {
-            await _signInManager.SignOutAsync();
-            return Redirect("~/");
-        }
-
-        public async Task<IActionResult> ConfirmEmail(string userId,string token)//register dan alacak
-        {
-            if (userId==null || token==null)
+            if (userId == null || token == null)
             {
                 CreateMessage("Geçersiz token", "danger");
                 return View();
             }
             var user = await _userManager.FindByIdAsync(userId);
-            if (user!=null)
+            if (user != null)
             {
                 var result = await _userManager.ConfirmEmailAsync(user, token);
                 if (result.Succeeded)
@@ -121,6 +115,74 @@ namespace ShopApp.Controllers
             CreateMessage("Hesabınız Onaylanmadı", "warning");
             return View();
         }
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return Redirect("~/");
+        }
+
+        //şifremi unuttum
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> ForgotPassword(string Email)
+        {
+            if (string.IsNullOrEmpty(Email))
+            {
+                return View();
+            }
+            var user = await _userManager.FindByEmailAsync(Email);
+            if (user==null)
+            {
+                return View();
+            }
+            // generate token
+            var code = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var url = Url.Action("ResetPassword", "Account", new
+            {
+                userId = user.Id,
+                token = code
+            });
+            // email
+            await _emailSender.SendEmailAsync(Email, "Reset Password", $"Parolanızı Yenilemek için linke <a href='https://localhost:5001{url}'>tıklayınız.</a>");
+            return View();
+        }
+        public IActionResult ResetPassword(string userId, string token)
+        {
+            if (userId==null||token==null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            var model = new ResetPasswordModel()
+            {
+                Token = token
+            };
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordModel resetPasswordModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(resetPasswordModel);
+            }
+            var user=await _userManager.FindByEmailAsync(resetPasswordModel.Email);
+            if (user==null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            var result = await _userManager.ResetPasswordAsync(user, resetPasswordModel.Token, resetPasswordModel.Password);
+            if (result.Succeeded)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+            return View(resetPasswordModel);
+        }
+        //şifremi unuttum --Son--
+
+       
 
         private void CreateMessage(string message, string alerttype)
         {
