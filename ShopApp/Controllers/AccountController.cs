@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using ShopApp.EmailServices;
+using ShopApp.Extensions;
 using ShopApp.Identity;
 using ShopApp.Models;
 using System.Threading.Tasks;
@@ -99,7 +100,12 @@ namespace ShopApp.Controllers
         {
             if (userId == null || token == null)
             {
-                CreateMessage("Geçersiz token", "danger");
+                TempData.Put("message", new AlertMessage()
+                {
+                    Title= "Geçersiz token",
+                    Message= "Geçersiz token.",
+                    AlertType="danger"
+                });
                 return View();
             }
             var user = await _userManager.FindByIdAsync(userId);
@@ -108,11 +114,21 @@ namespace ShopApp.Controllers
                 var result = await _userManager.ConfirmEmailAsync(user, token);
                 if (result.Succeeded)
                 {
-                    CreateMessage("Hesabınız Onaylandı", "success");
+                    TempData.Put("message", new AlertMessage()
+                    {
+                        Title = "Hesabınız Onaylandı",
+                        Message = "Hesabınız Onaylandı.",
+                        AlertType = "success"
+                    });
                     return View();
                 }
             }
-            CreateMessage("Hesabınız Onaylanmadı", "warning");
+            TempData.Put("message", new AlertMessage()
+            {
+                Title = "Hesabınız Onaylanmadı",
+                Message = "Hesabınız Onaylanmadı.",
+                AlertType = "warning"
+            });
             return View();
         }
         public async Task<IActionResult> Logout()
@@ -183,15 +199,5 @@ namespace ShopApp.Controllers
         //şifremi unuttum --Son--
 
        
-
-        private void CreateMessage(string message, string alerttype)
-        {
-            var msg = new AlertMessage
-            {
-                Message = message,
-                AlertType = alerttype
-            };
-            TempData["message"] = JsonConvert.SerializeObject(msg);
-        }
     }
 }

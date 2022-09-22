@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using ShopApp.Extensions;
 using ShopApp.Models;
 using System;
 using System.IO;
@@ -54,11 +55,21 @@ namespace ShopApp.Controllers
                 if (_productService.Create(entity)) // iş kuralı için create yi bool a çevirdik
                 {
                     //bilgilendirme mesajı
-                    CreateMessage("kayıt eklendi", "success");
+                    TempData.Put("message", new AlertMessage()
+                    {
+                        Title = "kayıt eklendi",
+                        Message = "kayıt eklendi.",
+                        AlertType = "success"
+                    });
                     //bilgilendirme mesajı -son-
                     return RedirectToAction("ProductList");
                 }
-                CreateMessage(_productService.ErrorMessage, "danger");
+                TempData.Put("message", new AlertMessage()
+                {
+                    Title = "Hata",
+                    Message = _productService.ErrorMessage,
+                    AlertType = "success"
+                });
                 return View(productModel);
 
             }
@@ -130,11 +141,21 @@ namespace ShopApp.Controllers
                 if (_productService.Update(entity, categoryIds)) // iş kuralı için update i bool a çevirdik
                 {
                     //bilgilendirme mesajı
-                    CreateMessage("kayıt güncellendi", "success");
+                    TempData.Put("message", new AlertMessage()
+                    {
+                        Title = "kayıt güncellendi",
+                        Message = "kayıt güncellendi.",
+                        AlertType = "success"
+                    });
                     //bilgilendirme mesajı -son-
                     return RedirectToAction("ProductList");
                 }
-                CreateMessage(_productService.ErrorMessage, "danger");
+                TempData.Put("message", new AlertMessage()
+                {
+                    Title = "Hata",
+                    Message = _productService.ErrorMessage,
+                    AlertType = "danger"
+                });
             }
             ViewBag.Categories = _categoryService.GetAll();
             return View(productModel);
@@ -150,7 +171,12 @@ namespace ShopApp.Controllers
             }
 
             //bilgilendirme mesajı
-            CreateMessage("kayıt silindi", "danger");
+            TempData.Put("message", new AlertMessage()
+            {
+                Title = "kayıt silindi",
+                Message = "kayıt silindi.",
+                AlertType = "danger"
+            });
             //bilgilendirme mesajı -son-
             return RedirectToAction("ProductList");
         }
@@ -184,7 +210,12 @@ namespace ShopApp.Controllers
                 _categoryService.Create(entity);
 
                 //bilgilendirme mesajı
-                CreateMessage("kayıt eklendi", "success");
+                TempData.Put("message", new AlertMessage()
+                {
+                    Title = "kayıt eklendi",
+                    Message = $"{entity.Name} isimli kayıt eklendi.",
+                    AlertType = "success"
+                });
                 //bilgilendirme mesajı -son-
 
 
@@ -233,7 +264,12 @@ namespace ShopApp.Controllers
                 _categoryService.Update(entity);
 
                 //bilgilendirme mesajı
-                CreateMessage("kayıt güncellendi", "success");
+                TempData.Put("message", new AlertMessage()
+                {
+                    Title = "kayıt güncellendi",
+                    Message = $"{entity.Name} isimli kayıt güncellendi.",
+                    AlertType = "success"
+                });
                 //bilgilendirme mesajı -son-
 
                 return RedirectToAction("CategoryList");
@@ -249,7 +285,12 @@ namespace ShopApp.Controllers
             }
 
             //bilgilendirme mesajı
-            CreateMessage("kayıt silindi", "danger");
+            TempData.Put("message", new AlertMessage()
+            {
+                Title = "kayıt silindi",
+                Message = "kayıt silindi.",
+                AlertType = "danger"
+            });
             //bilgilendirme mesajı -son-
             return RedirectToAction("CategoryList");
         }
@@ -262,17 +303,7 @@ namespace ShopApp.Controllers
 
         // --- Category SON ---
 
-        //bilgilendirme mesajı
-        private void CreateMessage(string message,string alerttype)
-        {
-            var msg = new AlertMessage
-            {
-                Message = message,
-                AlertType = alerttype
-            };
-            TempData["message"] = JsonConvert.SerializeObject(msg);
-        }
-        //bilgilendirme mesajı -son-
+        
     }
 }
 

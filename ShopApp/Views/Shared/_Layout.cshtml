@@ -18,15 +18,7 @@
             @* bilgilendirme mesajý*@
             @if (TempData["message"]!=null)
             {
-                var message = JsonConvert.DeserializeObject<AlertMessage>(TempData["message"] as string);
-
-                <div class="row"cla>
-                    <div class="col-md-12">
-                        <div class="alert alert-@message.AlertType">
-                            @message.Message
-                        </div>
-                    </div>
-                </div>
+                <partial name="_ResultMessage" model="@(TempData.Get<AlertMessage>("message"))" />
             }
             @* bilgilendirme mesajý -son-*@
             @RenderBody()
