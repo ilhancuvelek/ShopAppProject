@@ -3,9 +3,11 @@ using DataAccess.Abstract;
 using Entity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using ShopApp.Extensions;
+using ShopApp.Identity;
 using ShopApp.Models;
 using System;
 using System.IO;
@@ -19,11 +21,41 @@ namespace ShopApp.Controllers
     {
         private IProductService _productService;
         private ICategoryService _categoryService;
-        public AdminController(IProductService productService, ICategoryService categoryService)
+        private RoleManager<IdentityRole> _roleManager;
+        private UserManager<User> _userManager;
+        public AdminController(IProductService productService, ICategoryService categoryService, RoleManager<IdentityRole> roleManager, UserManager<User> userManager)
         {
             _productService = productService;
             _categoryService = categoryService;
+            _roleManager = roleManager;
+            _userManager = userManager;
         }
+
+
+        //Üyelik Yönetimi
+        public IActionResult RoleList()
+        {
+            return View(_roleManager.Roles);
+        }
+        public IActionResult RoleCreate()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> RoleCreate(RoleModel roleModel)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _roleManager.CreateAsync(new IdentityRole(roleModel.Name));
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("RoleList","Admin");
+                }
+            }
+            return View(roleModel);
+        }
+        //Üyelik Yönetimi --SON--
+
         //  --- Product ---
         public IActionResult ProductList()
         {
