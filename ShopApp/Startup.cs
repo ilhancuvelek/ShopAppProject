@@ -133,6 +133,11 @@ namespace ShopApp
                     pattern: "admin/role/create",
                     defaults: new { controller = "Admin", action = "RoleCreate" }
                 );
+                endpoints.MapControllerRoute(
+                   name: "adminroletedit",
+                   pattern: "admin/role/{id?}",
+                   defaults: new { controller = "Admin", action = "RoleEdit" }
+                );
                 //Üyelik Yönetimi --SON--
 
                 //admin ürün listeleme
