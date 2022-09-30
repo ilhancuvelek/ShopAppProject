@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 
 namespace ShopApp.Controllers
 {
-    [Authorize]
+    [Authorize(Roles ="Admin")]
     public class AdminController : Controller
     {
         private IProductService _productService;
@@ -37,6 +37,7 @@ namespace ShopApp.Controllers
         {
             return View(_userManager.Users);
         }
+        
         //Users --SON--
 
         //Üyelik Yönetimi
