@@ -198,6 +198,10 @@ namespace ShopApp.Controllers
         }
         //şifremi unuttum --Son--
 
-       
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
+
     }
 }
