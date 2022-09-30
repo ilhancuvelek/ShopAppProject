@@ -32,6 +32,12 @@ namespace ShopApp.Controllers
             _userManager = userManager;
         }
 
+        //Users
+        public IActionResult UserList()
+        {
+            return View(_userManager.Users);
+        }
+        //Users --SON--
 
         //Üyelik Yönetimi
         public IActionResult RoleList()

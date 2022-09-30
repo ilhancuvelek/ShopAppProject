@@ -122,6 +122,24 @@ namespace ShopApp
 
             app.UseEndpoints(endpoints =>
             {
+                //Users
+                endpoints.MapControllerRoute(
+                    name: "adminuserlist",
+                    pattern: "admin/user/list",
+                    defaults: new { controller = "Admin", action = "UserList" }
+                );
+                endpoints.MapControllerRoute(
+                    name: "adminusercreate",
+                    pattern: "admin/user/create",
+                    defaults: new { controller = "Admin", action = "UserCreate" }
+                );
+                endpoints.MapControllerRoute(
+                   name: "adminusertedit",
+                   pattern: "admin/user/{id?}",
+                   defaults: new { controller = "Admin", action = "UserEdit" }
+                );
+                //Users --SON--
+
                 //Üyelik Yönetimi
                 endpoints.MapControllerRoute(
                     name: "adminrolelist",
